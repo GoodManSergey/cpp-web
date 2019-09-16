@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/cpp_web.dir/src/ClientSocketLinux.cpp.o CMakeFiles/cpp_web.dir/src/ServerSocketLinux.cpp.o CMakeFiles/cpp_web.dir/src/main.cpp.o  -o cpp_web 

@@ -1,0 +1,10 @@
+#ifndef CPP_WEB_CLIENTSOCKETLINUX_H
+#define CPP_WEB_CLIENTSOCKETLINUX_H
+
+
+class ClientSocketLinux {
+
+};
+
+
+#endif //CPP_WEB_CLIENTSOCKETLINUX_H
