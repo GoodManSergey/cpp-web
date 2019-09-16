@@ -3,8 +3,17 @@
 //
 
 #include "Scoket/ServerSocketLinux.h"
+#include <memory>
+#include <iostream>
 
 int main()
 {
+    auto create_server_result = ServerSocketLinux::create(8080);
+    if (!create_server_result)
+    {
+        std::cout << "Create server socket error" << std::endl;
+        return -1;
+    }
+    std::unique_ptr<ServerSocketLinux> server = std::move(create_server_result.m_object);
     return 0;
 }

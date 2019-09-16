@@ -2,6 +2,7 @@
 #define CPP_WEB_RESULT_H
 
 #include "ResultCode.h"
+#include <memory>
 
 template <typename T>
 struct Result
@@ -10,9 +11,9 @@ struct Result
             m_code(code)
     {}
 
-    Result(const T& object):
+    explicit Result(const T& object):
             m_code(ResultCode::OK),
-            m_object(object)
+            m_object(std::move(object))
     {}
 
     operator bool()
