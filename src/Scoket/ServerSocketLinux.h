@@ -2,10 +2,11 @@
 #define CPP_WEB_SERVERSOCKETLINUX_H
 
 #include "ClientSocketLinux.h"
-#include "Utils/ResultCode.h"
-#include "Utils/Result.h"
+#include "../Utils/ResultCode.h"
+#include "../Utils/Result.h"
 #include <bits/sigstack.h>
 #include <memory>
+#include <netinet/in.h>
 #include <sys/socket.h>
 
 class ServerSocketLinux
@@ -13,6 +14,7 @@ class ServerSocketLinux
 public:
     static Result<std::unique_ptr<ServerSocketLinux>> create(int port);
     Result<std::unique_ptr<ClientSocketLinux>> accept();
+    ~ServerSocketLinux();
 
 private:
     ServerSocketLinux() = default;
@@ -21,6 +23,7 @@ private:
 
     int m_socket{};
     int m_port{};
+    sockaddr_in m_address{};
 
 };
 

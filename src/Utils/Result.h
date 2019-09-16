@@ -6,21 +6,21 @@
 template <typename T>
 struct Result
 {
-    result(result_code code):
+    Result(ResultCode code):
             m_code(code)
     {}
 
-    result(const T& object):
-            m_code(result_code::OK),
+    Result(const T& object):
+            m_code(ResultCode::OK),
             m_object(object)
     {}
 
     operator bool()
     {
-        return m_code == result_code::OK;
+        return m_code == ResultCode::OK;
     }
 
-    result_code m_code;
+    ResultCode m_code;
     T m_object;
 };
 

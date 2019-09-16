@@ -1,0 +1,3 @@
+/home/sergey/coding/cpp_web/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/sergey/coding/cpp_web/cmake-build-debug/CMakeFiles/cpp_web.dir
+/home/sergey/coding/cpp_web/cmake-build-debug/CMakeFiles/edit_cache.dir

@@ -2,7 +2,7 @@
 // Created by sergey on 16.09.19.
 //
 
-#include "ServerSocketLinux.h"
+#include "Scoket/ServerSocketLinux.h"
 
 int main()
 {
