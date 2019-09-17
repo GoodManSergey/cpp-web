@@ -11,7 +11,7 @@ struct Result
             m_code(code)
     {}
 
-    explicit Result(const T& object):
+    explicit Result(T object):
             m_code(ResultCode::OK),
             m_object(std::move(object))
     {}

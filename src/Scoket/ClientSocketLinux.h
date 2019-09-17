@@ -5,13 +5,14 @@
 #include <memory>
 
 
-class ClientSocketLinux {
+class ClientSocketLinux
+{
 public:
-    static Result<std::unique_ptr<ClientSocketLinux>> create(int fd);
+    explicit ClientSocketLinux(int fd);
+    void read();
     ~ClientSocketLinux();
 
 private:
-    ClientSocketLinux(int fd);
     int m_fd;
 };
 

@@ -36,12 +36,19 @@ ResultCode ServerSocketLinux::init(int port)
         return ResultCode::BIND_SOCKET_ERROR;
     }
 
+    if (listen(m_socket, 0) < 0)
+    {
+        //TODO: logs here
+        return ResultCode::LISTEN_SOCKET_ERROR;
+    }
+
     return ResultCode::OK;
 }
 
 ServerSocketLinux::~ServerSocketLinux()
 {
     close(m_socket);
+    ServerSocketLinux::m_have_instance = false;
 }
 
 Result<std::unique_ptr<ServerSocketLinux>> ServerSocketLinux::create(int port)
@@ -60,4 +67,19 @@ Result<std::unique_ptr<ServerSocketLinux>> ServerSocketLinux::create(int port)
     }
 
     return init_result;
+}
+
+Result<std::unique_ptr<ClientSocketLinux>> ServerSocketLinux::accept()
+{
+    int addr_size = sizeof(m_address);
+    int client_fd = ::accept(m_socket, (sockaddr*)&m_address, (socklen_t*)&addr_size);
+
+    if (client_fd < 0)
+    {
+        return ResultCode::NO_NEW_CONNECTIONS;
+    }
+
+    std::unique_ptr<ClientSocketLinux> client_socket = std::make_unique<ClientSocketLinux>(client_fd);
+
+    return std::move(Result<std::unique_ptr<ClientSocketLinux>>{std::move(client_socket)});
 }
