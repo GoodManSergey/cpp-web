@@ -27,6 +27,6 @@ int main()
             break;
         }
     }
-    client->read();
+    client->test();
     return 0;
 }
