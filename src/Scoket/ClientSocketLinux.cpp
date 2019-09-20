@@ -65,6 +65,22 @@ ResultCode ClientSocketLinux::send(std::string& msg)
     return ResultCode::OK;
 }
 
+Result<RequestLine> ClientSocketLinux::get_request_line()
+{
+    //TODO: ограничение по времени на чтение
+    if (m_buffer.length() > 0)
+    {
+        int pos = m_buffer.find(del);
+
+        if (pos)
+        {
+            std::string result_string{m_buffer[0:pos + del.length()]};
+            return
+        }
+    }
+    }
+}
+
 void ClientSocketLinux::test()
 {
     std::string gotten;
