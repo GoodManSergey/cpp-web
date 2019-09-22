@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <iostream>
+#include "../HTTP/HTTPParser.h"
 
 
 ClientSocketLinux::ClientSocketLinux(int fd):
@@ -67,18 +68,38 @@ ResultCode ClientSocketLinux::send(std::string& msg)
 
 Result<RequestLine> ClientSocketLinux::get_request_line()
 {
-    //TODO: ограничение по времени на чтение
-    if (m_buffer.length() > 0)
-    {
-        int pos = m_buffer.find(del);
+    //TODO: ограничить попытки на читение, возможно таймер, чтобы не держать сокет, если соединение установили, но ничего не отправляют
+    int pos = m_buffer.find("\r\n");
 
-        if (pos)
+    if (pos != std::string::npos)
+    {
+        std::string result_string = m_buffer.substr(0, pos);
+        m_buffer.erase(0, pos + 2);
+
+        auto parse_result = HTTPParser::parse_request_line(result_string);
+
+        if (!parse_result)
         {
-            std::string result_string{m_buffer[0:pos + del.length()]};
-            return
+            return ResultCode::SOCKET_WAS_CLOSED;
+        }
+
+        return std::move(Result<RequestLine>(parse_result.m_object));
+    }
+    else
+    {
+        auto read_result = read();
+        if (read_result)
+        {
+            m_buffer += read_result.m_object;
+
+            return ResultCode::EMPTY_RESULT;
+        }
+        else
+        {
+            return read_result.m_code;
         }
     }
-    }
+
 }
 
 void ClientSocketLinux::test()
@@ -94,10 +115,10 @@ void ClientSocketLinux::test()
                     "<html><body><h1>It works!</h1></body></html>"};
     while (true)
     {
-        auto gotten_result = read();
+        auto gotten_result = get_request_line();
         if (gotten_result)
         {
-            std::cout<<gotten_result.m_object<<std::endl;
+            //std::cout<<gotten_result.m_object<<std::endl;
             break;
         }
     }

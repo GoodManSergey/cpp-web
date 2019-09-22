@@ -8,7 +8,9 @@
 class RequestLine
 {
 public:
-    RequestLine() = delete;
+    RequestLine():
+        m_method(Method::GET)
+    {}
     RequestLine(Method method, std::string path, std::string protocol_version):
         m_method(method),
         m_path(std::move(path)),

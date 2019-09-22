@@ -11,6 +11,7 @@ enum class Method: int
     DELETE
 };
 
+/*
 std::string method_to_string(Method method)
 {
     switch (method)
@@ -18,8 +19,11 @@ std::string method_to_string(Method method)
         case Method::GET:
             return "GET";
         case Method::POST:
-            return "POST"
+            return "POST";
+        default:
+            return "ERROR METHOD";
     }
 }
+*/
 
 #endif //CPP_WEB_METHOD_H
