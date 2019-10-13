@@ -2,7 +2,7 @@
 #define CPP_WEB_CLIENTSOCKETLINUX_H
 
 #include "../Utils/Result.h"
-#include "../HTTP/RequestLine.h"
+#include "../Request/RequestLine.h"
 #include <string>
 #include <memory>
 

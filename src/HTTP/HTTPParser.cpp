@@ -46,3 +46,21 @@ Result<RequestLine> HTTPParser::parse_request_line(std::string data)
 
     return std::move(Result<RequestLine>(RequestLine(method, res_url, data)));
 }
+
+Result<std::unordered_map<std::string, std::string>> HTTPParser::parse_res_url(std::string& res_url)
+{
+    std::string res_url_with_args = res_url;
+    int del_pos = res_url_with_args.find("?");
+    if (del_pos == std::string::npos) {
+        return std::move(Result<std::unordered_map<std::string, std::string>>({}));
+    }
+
+    res_url = res_url_with_args.substr(0, del_pos);
+    res_url_with_args.erase(0, del_pos + 1);
+
+    while ((del_pos = res_url_with_args.find("&")) != std::string::npos)
+    {
+
+    }
+
+}

@@ -1,7 +1,7 @@
 #ifndef CPP_WEB_REQUESTLINE_H
 #define CPP_WEB_REQUESTLINE_H
 
-#include "Method.h"
+#include "../HTTP/Method.h"
 #include <string>
 
 
