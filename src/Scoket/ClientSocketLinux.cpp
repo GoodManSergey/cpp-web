@@ -99,7 +99,6 @@ Result<RequestLine> ClientSocketLinux::get_request_line()
             return read_result.m_code;
         }
     }
-
 }
 
 void ClientSocketLinux::test()
@@ -118,7 +117,7 @@ void ClientSocketLinux::test()
         auto gotten_result = get_request_line();
         if (gotten_result)
         {
-            //std::cout<<gotten_result.m_object<<std::endl;
+            std::cout<<gotten_result.m_object.m_path<<" "<<gotten_result.m_object.m_protocol_version<<std::endl;
             break;
         }
     }
