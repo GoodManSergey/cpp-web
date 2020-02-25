@@ -7,7 +7,7 @@
 
 Result<RequestLine> HTTPParser::parse_request_line(std::string data)
 {
-    int space_pos = data.find(" ");
+    int space_pos = data.find(' ');
     if (space_pos == std::string::npos)
     {
         return ResultCode::PARSER_ERROR;
@@ -37,7 +37,7 @@ Result<RequestLine> HTTPParser::parse_request_line(std::string data)
         return ResultCode::PARSER_ERROR;
     }
 
-    space_pos = data.find(" ");
+    space_pos = data.find(' ');
     if (space_pos == std::string::npos)
     {
         return ResultCode::PARSER_ERROR;
@@ -49,16 +49,16 @@ Result<RequestLine> HTTPParser::parse_request_line(std::string data)
     return std::move(Result<RequestLine>(RequestLine(method, res_url, data)));
 }
 
-Result<URL> HTTPParser::parse_res_url(std::string res_url)
+/*Result<URL> HTTPParser::parse_res_url(std::string res_url)
 {
     URL url;
 
     int del_pos;
-    while ((del_pos = res_url.rfind("/")) != std::string::npos)
+    while ((del_pos = res_url.rfind('/')) != std::string::npos)
     {
         std::string path = res_url.substr(del_pos, res_url.length());
         res_url.erase(del_pos, del_pos + path.length());
     }
 
     return std::move(Result<URL>(std::move(url)));
-}
+}*/

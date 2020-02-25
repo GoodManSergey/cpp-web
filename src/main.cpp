@@ -2,8 +2,8 @@
 // Created by sergey on 16.09.19.
 //
 
-#include "Scoket/ServerSocketLinux.h"
-#include "Scoket/ClientSocketLinux.h"
+#include "Socket/ServerSocketLinux.h"
+#include "Socket/ClientSocketLinux.h"
 #include <memory>
 #include <iostream>
 

@@ -1,18 +1,22 @@
 #ifndef CPP_WEB_REQUEST_H
 #define CPP_WEB_REQUEST_H
 
+#include <vector>
 #include "RequestLine.h"
 #include "../HTTP/Method.h"
 
 class Request
 {
 public:
-    Request(RequestLine req_line) : m_req_line(std::move(req_line)) { }
+    explicit Request(const RequestLine& request_line) :
+        m_request_line(request_line)
+        { }
+
     Method get_request_method();
 
 private:
-    RequestLine m_req_line;
-    //TODO: Поле data
+    RequestLine m_request_line;
+    std::vector<uint8_t> m_data;
     //TODO: Добавить поле headers
 
 };

@@ -9,7 +9,7 @@
 namespace HTTPParser
 {
 Result<RequestLine> parse_request_line(std::string data);
-Result<URL> parse_res_url(std::string res_url);
+//Result<URL> parse_res_url(std::string res_url);
 }
 
 #endif //CPP_WEB_HTTPPARSER_H

@@ -4,7 +4,7 @@
 #include "ClientSocketLinux.h"
 #include "../Utils/ResultCode.h"
 #include "../Utils/Result.h"
-#include <signal.h>
+#include <csignal>
 #include <memory>
 #include <netinet/in.h>
 #include <sys/socket.h>
