@@ -12,18 +12,26 @@
 class ServerSocketLinux
 {
 public:
-    static Result<std::unique_ptr<ServerSocketLinux>> create(int port);
-    Result<std::unique_ptr<ClientSocketLinux>> accept();
-    ~ServerSocketLinux();
+
+	enum class SocketFamily {
+		INET,
+	};
+
+	static Result<std::unique_ptr<ServerSocketLinux>> create(int port, ServerSocketLinux::SocketFamily socket_family);
+	~ServerSocketLinux();
+
+	Result<std::unique_ptr<ClientSocketLinux>> accept();
 
 private:
-    ServerSocketLinux() = default;
-    ResultCode init(int port);
-    static bool m_have_instance;
+	ServerSocketLinux() = default;
+	ResultCode init(int port, ServerSocketLinux::SocketFamily socket_family);
+	int get_socket_family(ServerSocketLinux::SocketFamily socket_family);
 
-    int m_socket{};
-    int m_port{};
-    sockaddr_in m_address{};
+	static bool m_have_instance;
+
+	int m_socket{};
+	int m_port{};
+	sockaddr_in m_address{};
 
 };
 

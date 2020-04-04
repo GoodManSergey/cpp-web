@@ -1,7 +1,3 @@
-//
-// Created by sergey on 16.09.19.
-//
-
 #include "Socket/ServerSocketLinux.h"
 #include "Socket/ClientSocketLinux.h"
 #include <memory>
@@ -9,7 +5,7 @@
 
 int main()
 {
-    auto create_server_result = ServerSocketLinux::create(8080);
+    auto create_server_result = ServerSocketLinux::create(8080, ServerSocketLinux::SocketFamily::INET);
     if (!create_server_result)
     {
         std::cout << "Create server socket error" << std::endl;
