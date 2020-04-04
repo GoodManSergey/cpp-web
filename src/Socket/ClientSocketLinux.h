@@ -6,20 +6,21 @@
 #include <string>
 #include <memory>
 
-
 class ClientSocketLinux
 {
 public:
-    explicit ClientSocketLinux(int fd);
-    Result<RequestLine> get_request_line();
-    ~ClientSocketLinux();
-    void test();
+	explicit ClientSocketLinux(int fd);
+	~ClientSocketLinux();
+
+	Result<RequestLine> get_request_line();
+	void test();
 
 private:
-    int m_fd;
-    std::string m_buffer;// TODO: ограничеие на буффер
-    Result<std::string> read();
-    ResultCode send(std::string& msg);
+	Result<std::string> read();
+	ResultCode send(std::string& msg);
+
+	int m_fd;
+	std::string m_buffer;// TODO: ограничеие на буффер
 };
 
 

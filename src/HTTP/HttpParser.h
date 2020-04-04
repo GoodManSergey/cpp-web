@@ -6,10 +6,8 @@
 #include "../URL/URL.h"
 #include <string>
 
-namespace HTTPParser
-{
+namespace HttpParser {
 Result<RequestLine> parse_request_line(std::string data);
-//Result<URL> parse_res_url(std::string res_url);
 }
 
 #endif //CPP_WEB_HTTPPARSER_H
