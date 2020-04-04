@@ -2,23 +2,16 @@
 #define CPP_WEB_REQUEST_H
 
 #include <vector>
+#include <unordered_map>
+#include <string>
 #include "RequestLine.h"
 #include "../HTTP/Method.h"
 
-class Request
-{
+class Request {
 public:
-    explicit Request(const RequestLine& request_line) :
-        m_request_line(request_line)
-        { }
-
-    Method get_request_method();
-
-private:
-    RequestLine m_request_line;
-    std::vector<uint8_t> m_data;
-    //TODO: Добавить поле headers
-
+	RequestLine m_request_line;
+	std::vector<uint8_t> m_data;
+	std::unordered_map<std::string, std::string> m_headers;
 };
 
 

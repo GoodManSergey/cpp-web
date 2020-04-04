@@ -3,12 +3,11 @@
 
 #include <string>
 
-enum class Method: int
-{
-    GET,
-    POST,
-    PUT,
-    DELETE
+enum class Method: int {
+	GET,
+	POST,
+	PUT,
+	DELETE
 };
 
 /*

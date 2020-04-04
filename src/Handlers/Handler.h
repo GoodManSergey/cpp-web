@@ -4,10 +4,9 @@
 #include "../Request/Request.h"
 
 
-class Handler
-{
+class Handler {
 public:
-    //virtual get(Request); //TODO: Добавить ответ(Метод не поддержиается)
+	//virtual get(Request); //TODO: Добавить ответ(Метод не поддержиается)
 
 };
 

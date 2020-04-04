@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include <list>
 
-
 Result<RequestLine> HttpParser::parse_request_line(std::string data) {
 	int space_pos = data.find(' ');
 	if (space_pos == std::string::npos) {
@@ -35,4 +34,12 @@ Result<RequestLine> HttpParser::parse_request_line(std::string data) {
 	data.erase(0, space_pos + 1);
 
 	return std::move(Result<RequestLine>(RequestLine(method, res_url, data)));
+}
+
+Result<std::pair<std::string, std::string> > HttpParser::parse_header(std::string data) {
+	int space_pos = data.find(": ");
+	if (space_pos == std::string::npos) {
+		return ResultCode::PARSER_ERROR;
+	}
+	return std::move(Result<std::pair<std::string, std::string>>({data.substr(0, space_pos), data.substr(space_pos + 2, data.length())}));
 }

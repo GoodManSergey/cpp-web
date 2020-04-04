@@ -50,7 +50,42 @@ ResultCode ClientSocketLinux::send(std::string& msg) {
 	return ResultCode::OK;
 }
 
-Result<RequestLine> ClientSocketLinux::get_request_line() {
+ResultCode ClientSocketLinux::get_request_line(Request& request) {
+	auto read_result = read_http_part();
+	if (read_result) {
+		auto parse_result = HttpParser::parse_request_line(read_result.m_object);
+
+		if (!parse_result) {
+			return ResultCode::SOCKET_WAS_CLOSED;
+		}
+
+		request.m_request_line = parse_result.m_object;
+		return ResultCode::OK;
+	} else {
+		return read_result.m_code;
+	}
+}
+
+ResultCode ClientSocketLinux::get_request_headers(Request& request) {
+	auto read_result = read_http_part();
+	if (read_result.m_object.length() == 0) {
+		return ResultCode::OK;
+	}
+
+	if (read_result) {
+		auto parse_result = HttpParser::parse_header(read_result.m_object);
+
+		if (!parse_result) {
+			return ResultCode::SOCKET_WAS_CLOSED;
+		}
+
+		request.m_headers.insert(parse_result.m_object);
+		return ResultCode::CONTINUE;
+	}
+	return read_result.m_code;
+}
+
+Result<std::string> ClientSocketLinux::read_http_part() {
 	//TODO: ограничить попытки на читение, возможно таймер, чтобы не держать сокет, если соединение установили, но ничего не отправляют
 	int pos = m_buffer.find("\r\n");
 
@@ -58,13 +93,7 @@ Result<RequestLine> ClientSocketLinux::get_request_line() {
 		std::string result_string = m_buffer.substr(0, pos);
 		m_buffer.erase(0, pos + 2);
 
-		auto parse_result = HttpParser::parse_request_line(result_string);
-
-		if (!parse_result) {
-			return ResultCode::SOCKET_WAS_CLOSED;
-		}
-
-		return std::move(Result<RequestLine>(parse_result.m_object));
+		return std::move(Result<std::string>(result_string));
 	} else {
 		auto read_result = read();
 		if (read_result) {
@@ -77,25 +106,28 @@ Result<RequestLine> ClientSocketLinux::get_request_line() {
 	}
 }
 
-void ClientSocketLinux::test()
-{
-    std::string gotten;
-    std::string msg{"HTTP/1.1 200 OK\r\n"
-                    "Server: cpp-web 0.1v\n"
-                    "Accept-Ranges: bytes\n"
-                    "Content-Length: 44\n"
-                    "Connection: close\n"
-                    "Content-Type: text/html\n"
-                    "\r\n"
-                    "<html><body><h1>It works!</h1></body></html>"};
-    while (true)
-    {
-        auto gotten_result = get_request_line();
-        if (gotten_result)
-        {
-            std::cout<<gotten_result.m_object.m_path<<" "<<gotten_result.m_object.m_protocol_version<<std::endl;
-            break;
-        }
-    }
-    send(msg);
+void ClientSocketLinux::test() {
+	std::string gotten;
+	std::string msg{"HTTP/1.1 200 OK\r\n"
+					"Content-Length: 44\n"
+					"Connection: close\n"
+					"Content-Type: text/html\n"
+					"\r\n"
+					"<html><body><h1>It works!</h1></body></html>"};
+	Request req;
+	while (true) {
+		if (get_request_line(req) == ResultCode::OK) {
+			std::cout<<req.m_request_line.m_path<<" "<<req.m_request_line.m_protocol_version<<std::endl;
+			break;
+		}
+	}
+	while (true) {
+		if (get_request_headers(req) == ResultCode::OK) {
+			for (auto & header : req.m_headers) {
+				std::cout << header.first << ": " << header.second << std::endl;
+			}
+			break;
+		}
+	}
+	send(msg);
 }

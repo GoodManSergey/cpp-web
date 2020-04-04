@@ -3,21 +3,24 @@
 
 #include "../Utils/Result.h"
 #include "../Request/RequestLine.h"
+#include "../Request/Request.h"
 #include <string>
 #include <memory>
 
-class ClientSocketLinux
-{
+class ClientSocketLinux {
 public:
 	explicit ClientSocketLinux(int fd);
 	~ClientSocketLinux();
 
-	Result<RequestLine> get_request_line();
+	ResultCode get_request_line(Request& request);
+	ResultCode get_request_headers(Request& request);
+
 	void test();
 
 private:
 	Result<std::string> read();
 	ResultCode send(std::string& msg);
+	Result<std::string> read_http_part();
 
 	int m_fd;
 	std::string m_buffer;// TODO: ограничеие на буффер
