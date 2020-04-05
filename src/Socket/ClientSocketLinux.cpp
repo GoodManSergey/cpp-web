@@ -22,7 +22,7 @@ Result<std::string> ClientSocketLinux::read() {
 	}
 
 	if (msg_size > 0) {
-		return std::move(Result<std::string>(std::move(std::string(buffer))));
+		return std::move(Result<std::string>(std::move(std::string(buffer, msg_size))));
 	} else if (msg_size == 0) {
 		return ResultCode::NOTHING_TO_READ;
 	} else {
@@ -85,6 +85,26 @@ ResultCode ClientSocketLinux::get_request_headers(Request& request) {
 	return read_result.m_code;
 }
 
+ResultCode ClientSocketLinux::get_content(Request &request, unsigned long content_length) {
+	//TODO: ограничить попытки на читение, возможно таймер, чтобы не держать сокет, если соединение установили, но ничего не отправляют
+	if (m_buffer.length() >= content_length) {
+		std::string content = m_buffer.substr(0, content_length);
+		m_buffer.erase(0, content_length);
+		std::vector<uint8_t> content_vector{content.begin(), content.end()};
+		request.m_content = std::move(content_vector);
+		return ResultCode::OK;
+	} else {
+		auto read_result = read();
+		if (read_result) {
+			m_buffer += read_result.m_object;
+
+			return ResultCode::CONTINUE;
+		} else {
+			return read_result.m_code;
+		}
+	}
+}
+
 Result<std::string> ClientSocketLinux::read_http_part() {
 	//TODO: ограничить попытки на читение, возможно таймер, чтобы не держать сокет, если соединение установили, но ничего не отправляют
 	int pos = m_buffer.find("\r\n");
@@ -92,14 +112,13 @@ Result<std::string> ClientSocketLinux::read_http_part() {
 	if (pos != std::string::npos) {
 		std::string result_string = m_buffer.substr(0, pos);
 		m_buffer.erase(0, pos + 2);
-
 		return std::move(Result<std::string>(result_string));
 	} else {
 		auto read_result = read();
 		if (read_result) {
 			m_buffer += read_result.m_object;
 
-			return ResultCode::EMPTY_RESULT;
+			return ResultCode::CONTINUE;
 		} else {
 			return read_result.m_code;
 		}
@@ -109,9 +128,9 @@ Result<std::string> ClientSocketLinux::read_http_part() {
 void ClientSocketLinux::test() {
 	std::string gotten;
 	std::string msg{"HTTP/1.1 200 OK\r\n"
-					"Content-Length: 44\n"
-					"Connection: close\n"
-					"Content-Type: text/html\n"
+					"Content-Length: 44\r\n"
+					"Connection: close\r\n"
+					"Content-Type: text/html\r\n"
 					"\r\n"
 					"<html><body><h1>It works!</h1></body></html>"};
 	Request req;
@@ -126,6 +145,13 @@ void ClientSocketLinux::test() {
 			for (auto & header : req.m_headers) {
 				std::cout << header.first << ": " << header.second << std::endl;
 			}
+			break;
+		}
+	}
+	while (true) {
+		if (get_content(req, atoi(req.m_headers["Content-Length"].c_str())) == ResultCode::OK) {
+			std::string str(req.m_content.begin(), req.m_content.end());
+			std::cout << str;
 			break;
 		}
 	}

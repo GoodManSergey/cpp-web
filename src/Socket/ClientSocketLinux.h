@@ -14,6 +14,7 @@ public:
 
 	ResultCode get_request_line(Request& request);
 	ResultCode get_request_headers(Request& request);
+	ResultCode get_content(Request& request, unsigned long data_length);
 
 	void test();
 
