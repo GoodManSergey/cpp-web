@@ -2,6 +2,7 @@
 #define CPP_WEB_SERVERSOCKETLINUX_H
 
 #include "ClientSocketLinux.h"
+#include "../ClientConnection/ClientConnection.h"
 #include "../Utils/ResultCode.h"
 #include "../Utils/Result.h"
 #include <csignal>
@@ -20,12 +21,12 @@ public:
 	static Result<std::unique_ptr<ServerSocketLinux>> create(int port, ServerSocketLinux::SocketFamily socket_family);
 	~ServerSocketLinux();
 
-	Result<std::unique_ptr<ClientSocketLinux>> accept();
+	Result<std::unique_ptr<ClientConnection>> accept();
 
 private:
+	static int get_socket_family(ServerSocketLinux::SocketFamily socket_family);
 	ServerSocketLinux() = default;
 	ResultCode init(int port, ServerSocketLinux::SocketFamily socket_family);
-	int get_socket_family(ServerSocketLinux::SocketFamily socket_family);
 
 	static bool m_have_instance;
 

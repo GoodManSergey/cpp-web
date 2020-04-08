@@ -15,16 +15,16 @@ public:
 	ResultCode get_request_line(Request& request);
 	ResultCode get_request_headers(Request& request);
 	ResultCode get_content(Request& request, unsigned long data_length);
-
-	void test();
+	ResultCode send_response(const std::string& msg);
 
 private:
 	Result<std::string> read();
-	ResultCode send(std::string& msg);
+	Result<int> send(const std::string& msg);
 	Result<std::string> read_http_part();
 
 	int m_fd;
 	std::string m_buffer;// TODO: ограничеие на буффер
+	int m_send_current_pos;
 };
 
 

@@ -5,6 +5,7 @@ enum class ResultCode: int {
 	// Success
 	OK,
 	CONTINUE,
+	REQUEST_READY,
 	// Socket errors
 	CREATE_SOCKET_FD_ERROR,
 	NON_BLOCK_SET_SOCKET_ERROR,

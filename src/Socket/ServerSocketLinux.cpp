@@ -55,7 +55,7 @@ Result<std::unique_ptr<ServerSocketLinux>> ServerSocketLinux::create(int port, S
 	return init_result;
 }
 
-Result<std::unique_ptr<ClientSocketLinux>> ServerSocketLinux::accept() {
+Result<std::unique_ptr<ClientConnection>> ServerSocketLinux::accept() {
 	int addr_size = sizeof(m_address);
 	int client_fd = ::accept(m_socket, (sockaddr*)&m_address, (socklen_t*)&addr_size);
 
@@ -64,8 +64,9 @@ Result<std::unique_ptr<ClientSocketLinux>> ServerSocketLinux::accept() {
 	}
 
 	std::unique_ptr<ClientSocketLinux> client_socket = std::make_unique<ClientSocketLinux>(client_fd);
+	std::unique_ptr<ClientConnection> clien_connection = std::make_unique<ClientConnection>(std::move(client_socket));
 
-	return std::move(Result<std::unique_ptr<ClientSocketLinux>>{std::move(client_socket)});
+	return std::move(Result<std::unique_ptr<ClientConnection>>{std::move(clien_connection)});
 }
 
 int ServerSocketLinux::get_socket_family(ServerSocketLinux::SocketFamily socket_family) {

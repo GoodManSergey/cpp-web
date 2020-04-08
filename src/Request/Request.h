@@ -12,6 +12,7 @@ public:
 	RequestLine m_request_line;
 	std::vector<uint8_t> m_content;
 	std::unordered_map<std::string, std::string> m_headers;
+	unsigned long m_content_length;
 };
 
 

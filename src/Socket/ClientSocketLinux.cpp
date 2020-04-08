@@ -5,7 +5,8 @@
 #include "../HTTP/HttpParser.h"
 
 ClientSocketLinux::ClientSocketLinux(int fd):
-	m_fd(fd)
+	m_fd(fd),
+	m_send_current_pos(0)
 { }
 
 ClientSocketLinux::~ClientSocketLinux() {
@@ -30,24 +31,14 @@ Result<std::string> ClientSocketLinux::read() {
 	}
 }
 
-ResultCode ClientSocketLinux::send(std::string& msg) {
-	int current_pos = 0;
+Result<int> ClientSocketLinux::send(const std::string& msg) {
 	int rc = 0;
-
-	//TODO:Добавить какой-то лимит на попытку отправки например, если мы несколько раз смогли отправить только 0 байт
-	while (msg.length() != current_pos) {
-		rc = ::send(m_fd, msg.c_str() + current_pos, msg.length() - current_pos, 0);
-
-		if (rc < 0) {
-			return ResultCode::SOCKET_WAS_CLOSED;
-		} else if (rc > 0) {
-			current_pos += rc;
-		} else {
-			//TODO: небольшой слип и счетчик обработчика
-			}
+	rc = ::send(m_fd, msg.c_str() + m_send_current_pos, msg.length() - m_send_current_pos, 0);
+	if (rc < 0) {
+		return ResultCode::SOCKET_WAS_CLOSED;
+	} else {
+		return Result<int>(rc);
 	}
-
-	return ResultCode::OK;
 }
 
 ResultCode ClientSocketLinux::get_request_line(Request& request) {
@@ -99,6 +90,8 @@ ResultCode ClientSocketLinux::get_content(Request &request, unsigned long conten
 			m_buffer += read_result.m_object;
 
 			return ResultCode::CONTINUE;
+		} else if (read_result.m_code == ResultCode::NOTHING_TO_READ) {
+			return ResultCode::CONTINUE;
 		} else {
 			return read_result.m_code;
 		}
@@ -119,41 +112,28 @@ Result<std::string> ClientSocketLinux::read_http_part() {
 			m_buffer += read_result.m_object;
 
 			return ResultCode::CONTINUE;
+		} else if (read_result.m_code == ResultCode::NOTHING_TO_READ) {
+			return ResultCode::CONTINUE;
 		} else {
 			return read_result.m_code;
 		}
 	}
 }
 
-void ClientSocketLinux::test() {
-	std::string gotten;
-	std::string msg{"HTTP/1.1 200 OK\r\n"
-					"Content-Length: 44\r\n"
-					"Connection: close\r\n"
-					"Content-Type: text/html\r\n"
-					"\r\n"
-					"<html><body><h1>It works!</h1></body></html>"};
-	Request req;
-	while (true) {
-		if (get_request_line(req) == ResultCode::OK) {
-			std::cout<<req.m_request_line.m_path<<" "<<req.m_request_line.m_protocol_version<<std::endl;
-			break;
+ResultCode ClientSocketLinux::send_response(const std::string &msg) {
+	//TODO:Добавить какой-то лимит на попытку отправки например, если мы несколько раз смогли отправить только 0 байт
+	if (msg.length() != m_send_current_pos) {
+		auto rc = send(msg.c_str() + m_send_current_pos);
+		if (!rc) {
+			return ResultCode::SOCKET_WAS_CLOSED;
+		} else if (rc.m_object > 0) {
+			m_send_current_pos += rc;
+		} else {
+			//Счетчик тут не смогли отправить больше
 		}
+	} else {
+		m_send_current_pos = 0;
+		return ResultCode::OK;
 	}
-	while (true) {
-		if (get_request_headers(req) == ResultCode::OK) {
-			for (auto & header : req.m_headers) {
-				std::cout << header.first << ": " << header.second << std::endl;
-			}
-			break;
-		}
-	}
-	while (true) {
-		if (get_content(req, atoi(req.m_headers["Content-Length"].c_str())) == ResultCode::OK) {
-			std::string str(req.m_content.begin(), req.m_content.end());
-			std::cout << str;
-			break;
-		}
-	}
-	send(msg);
+	return ResultCode::CONTINUE;
 }
