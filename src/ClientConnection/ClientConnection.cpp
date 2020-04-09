@@ -64,7 +64,7 @@ ResultCode ClientConnection::read_content() {
 }
 
 ResultCode ClientConnection::send_response() {
-	auto result = m_client_socket->send_response(m_response); // здесь должен быть сериалайз респонса
+	auto result = m_client_socket->send_response(m_response.serialize());
 	if (result == ResultCode::OK) {
 		//TODO: анализируем connectio и либо ставим статус read_request line либо socket close;
 		m_state = State::SOCKET_CLOSED;
@@ -75,7 +75,7 @@ ResultCode ClientConnection::send_response() {
 	return result;
 }
 
-void ClientConnection::set_response(const std::string& response) {
+void ClientConnection::set_response(Response response) {
 	m_state = State::SEND_RESPONSE;
-	m_response = response;
+	m_response = std::move(response);
 }

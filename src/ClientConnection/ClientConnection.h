@@ -4,6 +4,7 @@
 #include "../Socket/ClientSocketLinux.h"
 #include "../Utils/ResultCode.h"
 #include "../Request/Request.h"
+#include "../Response/Response.h"
 #include <memory>
 
 class ClientConnection {
@@ -19,7 +20,7 @@ public:
 
 	explicit ClientConnection(std::unique_ptr<ClientSocketLinux> client_socket);
 	ResultCode proceed();
-	void set_response(const std::string& response);
+	void set_response(Response response);
 
 private:
 	ResultCode read_request_line();
@@ -31,7 +32,7 @@ private:
 	std::unique_ptr<ClientSocketLinux> m_client_socket;
 	State m_state;
 	Request m_request;
-	std::string m_response; // заменить на класс
+	Response m_response;
 };
 
 
