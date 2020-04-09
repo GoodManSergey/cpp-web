@@ -1,5 +1,7 @@
-//
-// Created by sergey on 13.10.19.
-//
-
 #include "Handler.h"
+
+Response Handler::get() {
+	Response response;
+	response.m_code = StatusCode::CE405;
+	return response;
+}

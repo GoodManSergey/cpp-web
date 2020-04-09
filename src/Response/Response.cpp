@@ -2,13 +2,13 @@
 #include <sstream>
 
 Response::Response() :
-m_code(ReturnCode::Code::S200)
+m_code(StatusCode::S200)
 { }
 
 std::string Response::serialize() {
 	std::stringstream ss;
 	ss << "HTTP/1.1 ";
-	ss << ReturnCode::get_description(m_code);
+	ss << get_status_code_description(m_code);
 	ss << "\r\n";
 
 	for (auto & header : m_headers) {

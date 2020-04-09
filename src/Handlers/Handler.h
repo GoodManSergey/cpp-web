@@ -2,11 +2,11 @@
 #define CPP_WEB_HANDLER_H
 
 #include "../Request/Request.h"
-
+#include "../Response/Response.h"
 
 class Handler {
 public:
-	//virtual get(Request); //TODO: Добавить ответ(Метод не поддержиается)
+	virtual Response get();
 
 };
 

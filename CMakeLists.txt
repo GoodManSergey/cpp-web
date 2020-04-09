@@ -3,5 +3,5 @@ cmake_minimum_required(VERSION 3.8)
 project(cpp_web)
 
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*/*.cpp src/*/*/*.cpp)
-add_executable(cpp_web ${SOURCE_FILES} src/ClientConnection/ClientConnection.cpp src/ClientConnection/ClientConnection.h src/Response/Response.cpp src/Response/Response.h src/Content/Content.h src/ContentImpl/HTML/Html.cpp src/ContentImpl/HTML/Html.h src/Response/ReturnCode.cpp src/Response/ReturnCode.h)
+add_executable(cpp_web ${SOURCE_FILES} src/ClientConnection/ClientConnection.cpp src/ClientConnection/ClientConnection.h src/Response/Response.cpp src/Response/Response.h src/Content/Content.h src/ContentImpl/HTML/Html.cpp src/ContentImpl/HTML/Html.h src/HTTP/Status.h src/HTTP/Status.cpp)
 target_compile_options(cpp_web PUBLIC -std=c++17)
