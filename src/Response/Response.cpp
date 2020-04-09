@@ -22,7 +22,7 @@ std::string Response::serialize() {
 		ss << "Content-Length: " << m_content->get_content_length() << "\r\n";
 		ss << "Content-Type: " << m_content->get_content_type() << "\r\n";
 		ss << "\r\n";
-		ss << m_content->serialize(); //ToDo: динамическое получение контента и результата
+		ss << m_content->serialize();
 	} else {
 		ss << "\r\n";
 	}

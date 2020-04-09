@@ -64,7 +64,7 @@ ResultCode ClientConnection::read_content() {
 }
 
 ResultCode ClientConnection::send_response() {
-	auto result = m_client_socket->send_response(m_response.serialize());
+	auto result = m_client_socket->send_response(m_response.serialize()); // ToDO: делать serialize 1 раз и хранить его результат
 	if (result == ResultCode::OK) {
 		//TODO: анализируем connectio и либо ставим статус read_request line либо socket close;
 		m_state = State::SOCKET_CLOSED;
