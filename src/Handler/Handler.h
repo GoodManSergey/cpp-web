@@ -7,8 +7,9 @@
 class Handler {
 public:
 	virtual Response get();
+	void start();
+	void stop();
 
 };
-
 
 #endif //CPP_WEB_HANDLER_H

@@ -5,3 +5,11 @@ Response Handler::get() {
 	response.m_code = StatusCode::CE405;
 	return response;
 }
+
+void Handler::start() {
+	return;
+}
+
+void Handler::stop() {
+	return;
+}
