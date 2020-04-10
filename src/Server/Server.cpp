@@ -1,5 +1,6 @@
 #include "Server.h"
 #include "../Utils/ResultCode.h"
+#include <unistd.h>
 
 Server::Server(std::unique_ptr<ServerSocketLinux> server_socket) :
 m_server_worker(true),
@@ -20,7 +21,20 @@ void Server::add_handler(int handlers_count, HandlerArgs args) {
 	}
 }
 
+void Server::get_new_connections() {
+	while (m_server_worker) {
+		auto result = m_server_socket->accept();
+		if (result) {
+			m_new_connections.add(std::move(result.m_object));
+		} else {
+			usleep(10); // TODO: в конфиг
+		}
+	}
+}
+
 void Server::serve() {
+	m_accept_new_connections_thread = std::thread(&Server::get_new_connections, this);
+
 	for (auto & handler : m_handlers) {
 		handler->start();
 	}
@@ -46,4 +60,10 @@ void Server::serve() {
 	for (auto & handler : m_handlers) {
 		handler->stop();
 	}
+
+	m_accept_new_connections_thread.join();
+}
+
+void Server::stop() {
+	m_server_worker = false;
 }

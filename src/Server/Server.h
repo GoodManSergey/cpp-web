@@ -17,11 +17,11 @@ public:
 
 	template <class Handler>
 	void add_handler(int handlers_count);
-
 	template <class Handler, class HandlerArgs>
 	void add_handler(int handlers_count, HandlerArgs args);
-
+	void get_new_connections();
 	void serve();
+	void stop();
 
 
 private:
@@ -33,6 +33,8 @@ private:
 
 	AsyncForwardList<std::unique_ptr<ClientConnection>> m_new_connections;
 	std::forward_list<std::unique_ptr<ClientConnection>> m_connections;
+
+	std::thread m_accept_new_connections_thread;
 
 };
 
