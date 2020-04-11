@@ -22,6 +22,8 @@ public:
 	ResultCode proceed();
 	void set_response(Response response);
 
+	Request m_request;
+
 private:
 	ResultCode read_request_line();
 	ResultCode read_headers();
@@ -31,7 +33,6 @@ private:
 
 	std::unique_ptr<ClientSocketLinux> m_client_socket;
 	State m_state;
-	Request m_request;
 	Response m_response;
 };
 

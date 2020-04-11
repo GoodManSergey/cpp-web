@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <regex>
 #include "RequestLine.h"
 #include "../HTTP/Method.h"
 
@@ -13,6 +14,7 @@ public:
 	std::vector<uint8_t> m_content;
 	std::unordered_map<std::string, std::string> m_headers;
 	unsigned long m_content_length;
+	std::cmatch m_url_parse_result;
 };
 
 
