@@ -1,9 +1,18 @@
 #include "Socket/ServerSocketLinux.h"
 #include "ClientConnection/ClientConnection.h"
 #include "ContentImpl/HTML/Html.h"
-#include "Response/Response.h"
+#include "Handler/Handler.h"
+#include "Server/Server.h"
 #include <memory>
 #include <iostream>
+
+class HomeHandler : public Handler {
+	Response get(Request request) override {
+		Response response;
+		response.m_content = std::make_shared<Html>(request.m_request_line.m_path);
+		return response;
+	}
+};
 
 int main() {
 	auto create_server_result = ServerSocketLinux::create(8080, ServerSocketLinux::SocketFamily::INET);
@@ -11,25 +20,10 @@ int main() {
 		std::cout << "Create server socket error" << std::endl;
 		return -1;
 	}
-	std::unique_ptr<ServerSocketLinux> server(std::move(create_server_result.m_object));
+	std::unique_ptr<ServerSocketLinux> server_socket(std::move(create_server_result.m_object));
 
-	std::unique_ptr<ClientConnection> client;
-	while (true) {
-		auto accept_result = server->accept();
-		if (accept_result) {
-			client = std::move(accept_result.m_object);
-			break;
-		}
-	}
-	while (true) {
-		auto rc = client->proceed();
-		if (rc == ResultCode::REQUEST_READY) {
-			Response response;
-			response.m_content = std::make_shared<Html>("<html><body><h1>It works!</h1></body></html>");
-			client->set_response(response);
-		}
-		if (rc == ResultCode::SOCKET_WAS_CLOSED)
-			break;
-	}
-	return 0;
+	Server server(std::move(server_socket));
+	server.add_handler<HomeHandler>(1, ".*");
+	server.serve();
+
 }

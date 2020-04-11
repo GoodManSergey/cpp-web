@@ -17,8 +17,8 @@ public:
 	virtual Response put(Request request);
 	virtual Response del(Request request);
 
-	void set_requests_queue(std::shared_ptr<AsyncQueue<std::unique_ptr<ClientConnection>>>);
-	void set_response_list(std::shared_ptr<AsyncForwardList<std::unique_ptr<ClientConnection>>>);
+	void set_requests_queue(std::shared_ptr<AsyncQueue<std::unique_ptr<ClientConnection>>> requests_queue);
+	void set_response_list(std::shared_ptr<AsyncForwardList<std::unique_ptr<ClientConnection>>> response_list);
 	void proceed();
 	void start();
 	void stop();

@@ -1,5 +1,6 @@
 #include "Handler.h"
 #include <unistd.h>
+#include <iostream>
 
 Response Handler::get(Request request) {
 	Response response;

@@ -1,34 +1,12 @@
 #include "Server.h"
 #include <unistd.h>
+#include <iostream>
 
 Server::Server(std::unique_ptr<ServerSocketLinux> server_socket) :
 m_server_worker(true),
-m_server_socket(std::move(server_socket))
+m_server_socket(std::move(server_socket)),
+m_new_connections(std::make_shared<AsyncForwardList<std::unique_ptr<ClientConnection>>>())
 { }
-
-template<class Handler>
-void Server::add_handler(int handlers_count, const std::string& handler_regexp) {
-	auto requests_queue = std::make_shared<AsyncQueue<std::unique_ptr<ClientConnection>>>();
-	m_ready_requests.push_back({handler_regexp, requests_queue});
-	for (int i = 0; i < handlers_count; i++) {
-		auto handler = std::make_unique<Handler>();
-		handler->set_response_list(m_new_connections);
-		handler->set_requests_queue(requests_queue);
-		m_handlers.push_back(std::make_unique<Handler>());
-	}
-}
-
-template<class Handler, class HandlerArgs>
-void Server::add_handler(int handlers_count, HandlerArgs args, const std::string& handler_regexp) {
-	auto requests_queue = std::make_shared<AsyncQueue<std::unique_ptr<ClientConnection>>>();
-	m_ready_requests.push_back({handler_regexp, requests_queue});
-	for (int i = 0; i < handlers_count; i++) {
-		auto handler = std::make_unique<Handler>(args);
-		handler->set_response_list(m_new_connections);
-		handler->set_requests_queue(requests_queue);
-		m_handlers.push_back(std::make_unique<Handler>());
-	}
-}
 
 void Server::get_new_connections() {
 	while (m_server_worker) {

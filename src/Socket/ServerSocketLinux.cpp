@@ -64,9 +64,9 @@ Result<std::unique_ptr<ClientConnection>> ServerSocketLinux::accept() {
 	}
 
 	std::unique_ptr<ClientSocketLinux> client_socket = std::make_unique<ClientSocketLinux>(client_fd);
-	std::unique_ptr<ClientConnection> clien_connection = std::make_unique<ClientConnection>(std::move(client_socket));
+	std::unique_ptr<ClientConnection> client_connection = std::make_unique<ClientConnection>(std::move(client_socket));
 
-	return std::move(Result<std::unique_ptr<ClientConnection>>{std::move(clien_connection)});
+	return std::move(Result<std::unique_ptr<ClientConnection>>{std::move(client_connection)});
 }
 
 int ServerSocketLinux::get_socket_family(ServerSocketLinux::SocketFamily socket_family) {

@@ -19,19 +19,19 @@ private:
 
 template <class T>
 void AsyncQueue<T>::push_back(T element) {
-	std::lock_guard lock(m_mutex);
+	const std::lock_guard<std::mutex> lock(m_mutex);
 	m_queue.push_back(std::move(element));
 }
 
 template <class T>
 Result<T> AsyncQueue<T>::front() {
-	std::lock_guard lock(m_mutex);
+	const std::lock_guard<std::mutex> lock(m_mutex);
 	if (m_queue.size() == 0) {
 		return ResultCode::EMPTY_RESULT;
 	}
 	auto element = std::move(m_queue.front());
 	m_queue.pop_front();
-	return std::move(element);
+	return Result<T>(std::move(element));
 }
 
 #endif //CPP_WEB_ASYNCQUEUE_H
