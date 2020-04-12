@@ -8,13 +8,16 @@
 
 class HomeHandler : public Handler {
 	Response get(Request request) override {
+		std::cout << "Start handle: " << request.m_request_line.m_path << std::endl;
 		Response response;
 		response.m_content = std::make_shared<Html>(request.m_request_line.m_path);
+		response.m_headers.insert({"Connection", "close"});
 		return response;
 	}
 };
 
 int main() {
+	signal(SIGPIPE, SIG_IGN);
 	auto create_server_result = ServerSocketLinux::create(8080, ServerSocketLinux::SocketFamily::INET);
 	if (!create_server_result) {
 		std::cout << "Create server socket error" << std::endl;

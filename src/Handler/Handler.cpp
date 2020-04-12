@@ -46,7 +46,7 @@ void Handler::proceed() {
 			}
 			m_response_list->add(std::move(get_request_result.m_object));
 		} else {
-			usleep(200); // Todo: в конфиг
+			usleep(500); // Todo: в конфиг
 		}
 	}
 }

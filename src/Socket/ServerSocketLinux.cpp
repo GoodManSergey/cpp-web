@@ -1,6 +1,7 @@
 #include "ServerSocketLinux.h"
 #include <fcntl.h>
 #include <unistd.h>
+#include <iostream>
 
 bool ServerSocketLinux::m_have_instance = false;
 
@@ -57,8 +58,9 @@ Result<std::unique_ptr<ServerSocketLinux>> ServerSocketLinux::create(int port, S
 
 Result<std::unique_ptr<ClientConnection>> ServerSocketLinux::accept() {
 	int addr_size = sizeof(m_address);
+	std::cout << "try accept" << std::endl;
 	int client_fd = ::accept(m_socket, (sockaddr*)&m_address, (socklen_t*)&addr_size);
-
+	std::cout << "accept" << std::endl;
 	if (client_fd < 0) {
 		return ResultCode::NO_NEW_CONNECTIONS;
 	}

@@ -10,6 +10,7 @@ ClientSocketLinux::ClientSocketLinux(int fd):
 { }
 
 ClientSocketLinux::~ClientSocketLinux() {
+	shutdown(m_fd, SHUT_RDWR);
 	close(m_fd);
 }
 
@@ -20,8 +21,10 @@ Result<std::string> ClientSocketLinux::read() {
 
 	if ((errno == EAGAIN || errno == EWOULDBLOCK) && msg_size < 0) {
 		msg_size = ::recv(m_fd, buffer, 1024, 0);
+	} else if (msg_size == 0) {
+		return ResultCode::SOCKET_WAS_CLOSED;
 	}
-
+	std::cout << msg_size << std::endl;
 	if (msg_size > 0) {
 		return std::move(Result<std::string>(std::move(std::string(buffer, msg_size))));
 	} else if (msg_size == 0) {
