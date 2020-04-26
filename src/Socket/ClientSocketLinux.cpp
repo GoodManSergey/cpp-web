@@ -1,7 +1,6 @@
 #include "ClientSocketLinux.h"
 #include <unistd.h>
 #include <sys/socket.h>
-#include <iostream>
 #include "../HTTP/HttpParser.h"
 
 ClientSocketLinux::ClientSocketLinux(int fd):
@@ -24,7 +23,6 @@ Result<std::string> ClientSocketLinux::read() {
 	} else if (msg_size == 0) {
 		return ResultCode::SOCKET_WAS_CLOSED;
 	}
-	std::cout << msg_size << std::endl;
 	if (msg_size > 0) {
 		return std::move(Result<std::string>(std::move(std::string(buffer, msg_size))));
 	} else if (msg_size == 0) {

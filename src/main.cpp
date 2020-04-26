@@ -7,7 +7,9 @@
 #include <iostream>
 
 class HomeHandler : public Handler {
-	Response get(Request request) override {
+public:
+	HomeHandler() = default;
+	Response get(const Request& request) override {
 		std::cout << "Start handle: " << request.m_request_line.m_path << std::endl;
 		Response response;
 		response.m_content = std::make_shared<Html>(request.m_request_line.m_path);
@@ -26,7 +28,7 @@ int main() {
 	std::unique_ptr<ServerSocketLinux> server_socket(std::move(create_server_result.m_object));
 
 	Server server(std::move(server_socket));
-	server.add_handler<HomeHandler>(1, ".*");
+	server.add_handler<HomeHandler>(1, std::string(".*"));
 	server.serve();
 
 }
