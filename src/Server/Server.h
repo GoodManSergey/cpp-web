@@ -17,16 +17,13 @@
 class Server {
 public:
 	explicit Server(std::unique_ptr<ServerSocketLinux> server_socket);
+	~Server();
 
 	template <class Handler>
 	void add_handler(int handlers_count, std::string handler_regexp);
 	void serve();
-	void stop();
-
 
 private:
-	std::atomic<bool> m_server_worker;//TODO: поменять на atomic flag
-
 	std::unique_ptr<ServerSocketLinux> m_server_socket;
 
 	std::shared_ptr<std::vector<HandlerPool>> m_handlers;

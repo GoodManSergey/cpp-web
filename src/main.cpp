@@ -29,6 +29,7 @@ int main() {
 
 	Server server(std::move(server_socket));
 	server.add_handler<HomeHandler>(1, std::string(".*"));
-	server.serve();
-
+	while (true) {
+		server.serve();
+	}
 }
