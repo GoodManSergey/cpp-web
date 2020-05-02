@@ -7,6 +7,7 @@
 #include "../Response/Response.h"
 #include "../Handler/Handler.h"
 #include "../HanlderPool/HandlerPool.h"
+#include "../Config/ConnectionConfig.h"
 #include <memory>
 #include <atomic>
 #include <thread>
@@ -22,7 +23,7 @@ public:
 		SOCKET_CLOSED
 	};
 
-	explicit ClientConnection(std::unique_ptr<ClientSocketLinux> client_socket);
+	ClientConnection(std::unique_ptr<ClientSocketLinux> client_socket, ConnectionConfig config);
 	~ClientConnection();
 	void set_handlers(std::shared_ptr<std::vector<HandlerPool>> handlers);
 	void start();
@@ -39,6 +40,8 @@ private:
 	ResultCode read_content();
 	ResultCode process_request();
 	ResultCode send_response();
+
+	ConnectionConfig m_config;
 
 	std::thread m_proceed_thread;
 

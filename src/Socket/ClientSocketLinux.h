@@ -4,12 +4,13 @@
 #include "../Utils/Result.h"
 #include "../Request/RequestLine.h"
 #include "../Request/Request.h"
+#include "../Config/ConnectionConfig.h"
 #include <string>
 #include <memory>
 
 class ClientSocketLinux {
 public:
-	explicit ClientSocketLinux(int fd);
+	ClientSocketLinux(int fd, ConnectionConfig config);
 	~ClientSocketLinux();
 
 	ResultCode get_request_line(Request& request);
@@ -21,6 +22,8 @@ private:
 	Result<std::string> read();
 	Result<int> send(const std::string& msg);
 	Result<std::string> read_http_part();
+
+	ConnectionConfig m_config;
 
 	int m_fd;
 	std::string m_buffer;// TODO: ограничеие на буффер

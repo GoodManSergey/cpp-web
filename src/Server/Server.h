@@ -5,6 +5,7 @@
 #include "../ClientConnection/ClientConnection.h"
 #include "../Handler/Handler.h"
 #include "../HanlderPool/HandlerPool.h"
+#include "../Config/ServerConfig.h"
 #include <memory>
 #include <atomic>
 #include <vector>
@@ -16,7 +17,7 @@
 
 class Server {
 public:
-	explicit Server(std::unique_ptr<ServerSocketLinux> server_socket);
+	Server(std::unique_ptr<ServerSocketLinux> server_socket, ServerConfig config = ServerConfig());
 	~Server();
 
 	template <class Handler>
@@ -24,10 +25,13 @@ public:
 	void serve();
 
 private:
+	ServerConfig m_config;
+
 	std::unique_ptr<ServerSocketLinux> m_server_socket;
 
 	std::shared_ptr<std::vector<HandlerPool>> m_handlers;
 
+	int m_active_connections;
 	std::forward_list<std::unique_ptr<ClientConnection>> m_connections;
 };
 

@@ -5,6 +5,7 @@
 #include "../ClientConnection/ClientConnection.h"
 #include "../Utils/ResultCode.h"
 #include "../Utils/Result.h"
+#include "../Config/ConnectionConfig.h"
 #include <csignal>
 #include <memory>
 #include <netinet/in.h>
@@ -18,7 +19,7 @@ public:
 		INET,
 	};
 
-	static Result<std::unique_ptr<ServerSocketLinux>> create(int port, ServerSocketLinux::SocketFamily socket_family);
+	static Result<std::unique_ptr<ServerSocketLinux>> create(int port, ServerSocketLinux::SocketFamily socket_family, ConnectionConfig config = ConnectionConfig());
 	~ServerSocketLinux();
 
 	Result<std::unique_ptr<ClientConnection>> accept();
@@ -26,7 +27,9 @@ public:
 private:
 	static int get_socket_family(ServerSocketLinux::SocketFamily socket_family);
 	ServerSocketLinux() = default;
-	ResultCode init(int port, ServerSocketLinux::SocketFamily socket_family);
+	ResultCode init(int port, ServerSocketLinux::SocketFamily socket_family, ConnectionConfig config);
+
+	ConnectionConfig m_config;
 
 	static bool m_have_instance;
 

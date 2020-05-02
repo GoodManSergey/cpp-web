@@ -4,10 +4,11 @@
 #include <cassert>
 #include <iostream>
 
-ClientConnection::ClientConnection(std::unique_ptr<ClientSocketLinux> client_socket) :
-m_client_socket(std::move(client_socket)),
-m_state(State::READ_REQUEST_LINE),
-m_handlers(std::shared_ptr<std::vector<HandlerPool>>{})
+ClientConnection::ClientConnection(std::unique_ptr<ClientSocketLinux> client_socket, ConnectionConfig config) :
+	m_config(std::move(config)),
+	m_client_socket(std::move(client_socket)),
+	m_state(State::READ_REQUEST_LINE),
+	m_handlers(std::shared_ptr<std::vector<HandlerPool>>{})
 { }
 
 ClientConnection::~ClientConnection() {
@@ -92,7 +93,7 @@ ResultCode ClientConnection::process_request() {
 					handler_pool.push_back(std::move(handler));
 					return ResultCode::OK;
 				} else {
-					usleep(200); //TODO: to config
+					usleep(m_config.m_usleep_time_no_free_handler);
 				}
 			}
 		}
@@ -124,7 +125,7 @@ void ClientConnection::proceed_func() {
 	while (m_state.load() != State::SOCKET_CLOSED) {
 		auto result = proceed();
 		if (result == ResultCode::NOTHING_TO_READ) {
-			usleep(1000); //TODO: to Config
+			usleep(m_config.m_usleep_time_nothing_to_read);
 		}
 	}
 }

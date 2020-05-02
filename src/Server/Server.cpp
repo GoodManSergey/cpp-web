@@ -2,8 +2,9 @@
 #include <unistd.h>
 #include <iostream>
 
-Server::Server(std::unique_ptr<ServerSocketLinux> server_socket) :
-m_server_socket(std::move(server_socket))
+Server::Server(std::unique_ptr<ServerSocketLinux> server_socket, ServerConfig config) :
+	m_config(std::move(config)),
+	m_server_socket(std::move(server_socket))
 {
 	m_handlers = std::make_shared<std::vector<HandlerPool>>();
 }
@@ -21,7 +22,7 @@ void Server::serve() {
 	}
 
 	if (m_connections.empty()) {
-		usleep(200); //TODO to config
+		usleep(m_config.m_usleep_time_no_new_connections);
 		return;
 	}
 

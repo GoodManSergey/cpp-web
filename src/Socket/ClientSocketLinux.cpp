@@ -3,7 +3,8 @@
 #include <sys/socket.h>
 #include "../HTTP/HttpParser.h"
 
-ClientSocketLinux::ClientSocketLinux(int fd):
+ClientSocketLinux::ClientSocketLinux(int fd, ConnectionConfig config):
+	m_config(std::move(config)),
 	m_fd(fd),
 	m_send_current_pos(0)
 { }
