@@ -1,6 +1,7 @@
 #include "Socket/ServerSocketLinux.h"
 #include "ClientConnection/ClientConnection.h"
 #include "ContentImpl/HTML/Html.h"
+#include "ContentImpl/FromFile/FromFile.h"
 #include "Handler/Handler.h"
 #include "Server/Server.h"
 #include <memory>
