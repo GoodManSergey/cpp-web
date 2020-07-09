@@ -17,11 +17,13 @@
 
 class Server {
 public:
-	Server(std::unique_ptr<ServerSocketLinux> server_socket, ServerConfig config = ServerConfig());
+	explicit Server(std::unique_ptr<ServerSocketLinux> server_socket, ServerConfig config = ServerConfig());
 	~Server();
 
 	template <class Handler>
 	void add_handler(int handlers_count, std::string handler_regexp);
+	template<class Handler, typename... Args>
+	void add_handler(int handlers_count, std::string handler_regexp, Args... args);
 	void serve();
 
 private:
@@ -40,6 +42,16 @@ void Server::add_handler(int handlers_count, std::string handler_regexp) {
 	HandlerPool handler_pool(std::move(handler_regexp));
 	for (int i = 0; i < handlers_count; i++) {
 		auto handler = std::make_unique<Handler>();
+		handler_pool.push_back(std::move(handler));
+	}
+	m_handlers->push_back(std::move(handler_pool));
+}
+
+template<class Handler, typename... Args>
+void Server::add_handler(int handlers_count, std::string handler_regexp, Args... args) {
+	HandlerPool handler_pool(std::move(handler_regexp));
+	for (int i = 0; i < handlers_count; i++) {
+		auto handler = std::make_unique<Handler>(args...);
 		handler_pool.push_back(std::move(handler));
 	}
 	m_handlers->push_back(std::move(handler_pool));
