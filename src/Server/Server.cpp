@@ -4,7 +4,8 @@
 
 Server::Server(std::unique_ptr<ServerSocketLinux> server_socket, ServerConfig config) :
 	m_config(std::move(config)),
-	m_server_socket(std::move(server_socket))
+	m_server_socket(std::move(server_socket)),
+	m_active_connections(0)
 {
 	m_handlers = std::make_shared<std::vector<HandlerPool>>();
 }

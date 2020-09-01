@@ -12,6 +12,11 @@ ResultCode ServerSocketLinux::init(int port, ServerSocketLinux::SocketFamily soc
 		return ResultCode::CREATE_SOCKET_FD_ERROR;
 	}
 
+	int enable_reuse_addr= 1;
+	if (setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, &enable_reuse_addr, sizeof(int)) < 0) {
+		return ResultCode::REUSE_ADDR_ERROR;
+	}
+
 	int flags;
 	flags = fcntl(m_socket, F_GETFL, 0);
 	if (flags == -1) {
