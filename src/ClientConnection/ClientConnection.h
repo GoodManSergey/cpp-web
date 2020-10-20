@@ -26,20 +26,18 @@ public:
 	ClientConnection(std::unique_ptr<ClientSocketLinux> client_socket, ConnectionConfig config);
 	~ClientConnection();
 	void set_handlers(std::shared_ptr<std::vector<HandlerPool>> handlers);
-	void start();
+    ResultCode proceed();
+    ResultCode read_request_line();
+    ResultCode read_headers();
+    ResultCode read_content();
+    ResultCode process_request();
+    ResultCode send_response();
+    void start();
 	void stop();
 	State get_state();
 
 private:
 	void proceed_func();
-
-	ResultCode proceed();
-
-	ResultCode read_request_line();
-	ResultCode read_headers();
-	ResultCode read_content();
-	ResultCode process_request();
-	ResultCode send_response();
 
 	ConnectionConfig m_config;
 

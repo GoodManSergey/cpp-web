@@ -1,0 +1,10 @@
+#ifndef CPP_WEB_CLIENTTHREADPROCESSOR_H
+#define CPP_WEB_CLIENTTHREADPROCESSOR_H
+
+
+class ClientThreadProcessor {
+
+};
+
+
+#endif //CPP_WEB_CLIENTTHREADPROCESSOR_H
