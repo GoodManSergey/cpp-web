@@ -11,11 +11,14 @@ std::string get_status_code_description(StatusCode code) {
 		case StatusCode::S200:
 			return "200 OK";
 
+		case StatusCode::R301:
+			return "301 Moved Temporary";
+
 		case StatusCode::CE405:
 			return "405 Method Not Allowed";
 // Todo: дописать коды)
 		default:
-			return "";
+			return "200 OK";
 	}
 }
 

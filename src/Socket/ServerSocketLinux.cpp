@@ -77,6 +77,7 @@ Result<std::unique_ptr<ClientConnection>> ServerSocketLinux::accept() {
 int ServerSocketLinux::get_socket_family(ServerSocketLinux::SocketFamily socket_family) {
 	switch (socket_family) {
 		case ServerSocketLinux::SocketFamily::INET:
+		default:
 			return AF_INET;
 	}
 }

@@ -1,7 +1,6 @@
 #include "Socket/ServerSocketLinux.h"
 #include "ClientConnection/ClientConnection.h"
 #include "ContentImpl/HTML/Html.h"
-#include "ContentImpl/FromFile/FromFile.h"
 #include "Handler/Handler.h"
 #include "Server/Server.h"
 #include <memory>
@@ -13,8 +12,9 @@ public:
 	Response get(const Request& request) override {
 		std::cout << "Start handle: " << request.m_request_line.m_path << std::endl;
 		Response response;
-		response.m_content = std::make_shared<Html>(request.m_request_line.m_path);
 		response.m_headers.insert({"Connection", "close"});
+		response.m_headers.insert({"Location", "/text"});
+		response.m_code = StatusCode::R301;
 		return response;
 	}
 };
@@ -50,7 +50,7 @@ int main() {
 	server.add_handler<TextHandler>(3, std::string("/text"), "some text here");
 	server.add_handler<HomeHandler>(3, std::string(".*"));
 
-
+	std::cout << "http://127.0.0.1:" << 8080 << std::endl;
 
 	while (true) {
 		server.serve();

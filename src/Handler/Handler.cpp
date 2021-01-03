@@ -34,5 +34,7 @@ Response Handler::process_request(const Request& request) {
 			return put(request);
 		case Method::DELETE:
 			return del(request);
+		default:
+			return get(request);
 	}
 }
