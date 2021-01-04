@@ -15,11 +15,14 @@ Server::~Server() {
 }
 
 void Server::serve() {
-	auto result = m_server_socket->accept();
-	if (result) {
-		result.m_object->set_handlers(m_handlers);
-		result.m_object->start();
-		m_connections.push_front(std::move(result.m_object));
+	if (m_active_connections < 1000) {
+		auto result = m_server_socket->accept();
+		if (result) {
+			m_active_connections++;
+			result.m_object->set_handlers(m_handlers);
+			result.m_object->start();
+			m_connections.push_front(std::move(result.m_object));
+		}
 	}
 
 	if (m_connections.empty()) {
@@ -27,6 +30,11 @@ void Server::serve() {
 		return;
 	}
 
-	m_connections.remove_if([](std::unique_ptr<ClientConnection>& connection)
-							{ return connection->get_state() == ClientConnection::State::SOCKET_CLOSED; });
+	m_connections.remove_if([&](std::unique_ptr<ClientConnection>& connection)
+							{
+		if (connection->get_state() == ClientConnection::State::SOCKET_CLOSED) {
+			m_active_connections--;
+			return true;
+		}
+		return false; });
 }

@@ -33,7 +33,7 @@ private:
 
 	std::shared_ptr<std::vector<HandlerPool>> m_handlers;
 
-	int m_active_connections;
+	unsigned m_active_connections;
 	std::forward_list<std::unique_ptr<ClientConnection>> m_connections;
 };
 

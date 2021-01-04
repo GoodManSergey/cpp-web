@@ -10,14 +10,18 @@ class HomeHandler : public Handler {
 public:
 	HomeHandler() = default;
 	Response get(const Request& request) override {
-		std::cout << "Start handle: " << request.m_request_line.m_path << std::endl;
 		Response response;
 		response.m_headers.insert({"Connection", "close"});
-		response.m_headers.insert({"Location", "/text"});
-		response.m_code = StatusCode::R301;
+		response.m_code = StatusCode::S200;
+		count++;
+		std::cout << count << std::endl;
 		return response;
 	}
+
+	static std::atomic<int> count;
 };
+
+std::atomic<int> HomeHandler::count = 0;
 
 class TextHandler : public Handler {
 public:
@@ -26,7 +30,6 @@ public:
 	}
 
 	Response get(const Request& request) override {
-		std::cout << "Start handle: " << request.m_request_line.m_path << std::endl;
 		Response response;
 		response.m_content = std::make_shared<Html>(m_text);
 		response.m_headers.insert({"Connection", "close"});
@@ -47,8 +50,8 @@ int main() {
 	std::unique_ptr<ServerSocketLinux> server_socket(std::move(create_server_result.m_object));
 
 	Server server(std::move(server_socket));
-	server.add_handler<TextHandler>(3, std::string("/text"), "some text here");
-	server.add_handler<HomeHandler>(3, std::string(".*"));
+	//server.add_handler<TextHandler>(3, std::string("/text"), "some text here");
+	server.add_handler<HomeHandler>(1000, std::string(".*"));
 
 	std::cout << "http://127.0.0.1:" << 8080 << std::endl;
 
