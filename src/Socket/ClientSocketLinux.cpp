@@ -125,11 +125,11 @@ Result<std::string> ClientSocketLinux::read_http_part() {
 ResultCode ClientSocketLinux::send_response(const std::string &msg) {
 	//TODO:Добавить какой-то лимит на попытку отправки например, если мы несколько раз смогли отправить только 0 байт
 	if (msg.length() != m_send_current_pos) {
-		auto rc = send(msg.c_str() + m_send_current_pos);
+		auto rc = send(msg);
 		if (!rc) {
 			return ResultCode::SOCKET_WAS_CLOSED;
 		} else if (rc.m_object > 0) {
-			m_send_current_pos += rc;
+			m_send_current_pos += rc.m_object;
 		} else {
 			//Счетчик тут не смогли отправить больше
 		}
