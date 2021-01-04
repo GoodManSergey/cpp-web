@@ -34,7 +34,7 @@ ResultCode ServerSocketLinux::init(int port, ServerSocketLinux::SocketFamily soc
 		return ResultCode::BIND_SOCKET_ERROR;
 	}
 
-	if (listen(m_socket, 0) < 0) {
+	if (listen(m_socket, 10000) < 0) { //TODO: размер очереди в конфиг
 		return ResultCode::LISTEN_SOCKET_ERROR;
 	}
 

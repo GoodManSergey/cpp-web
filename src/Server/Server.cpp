@@ -15,14 +15,12 @@ Server::~Server() {
 }
 
 void Server::serve() {
-	if (m_active_connections < 1000) {
-		auto result = m_server_socket->accept();
-		if (result) {
-			m_active_connections++;
-			result.m_object->set_handlers(m_handlers);
-			result.m_object->start();
-			m_connections.push_front(std::move(result.m_object));
-		}
+	auto result = m_server_socket->accept();
+	if (result) {
+		m_active_connections++;
+		result.m_object->set_handlers(m_handlers);
+		result.m_object->start();
+		m_connections.push_front(std::move(result.m_object));
 	}
 
 	if (m_connections.empty()) {

@@ -51,7 +51,7 @@ int main() {
 
 	Server server(std::move(server_socket));
 	//server.add_handler<TextHandler>(3, std::string("/text"), "some text here");
-	server.add_handler<HomeHandler>(1000, std::string(".*"));
+	server.add_handler<HomeHandler>(1, std::string(".*"));
 
 	std::cout << "http://127.0.0.1:" << 8080 << std::endl;
 
